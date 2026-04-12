@@ -33,6 +33,7 @@
                 <td><?php echo $row[2] ?></td>
                 <td><?php echo $row[3] ?></td>
                 <td>
+                    <a href="detailKontak.php?id=<?php echo $row[0] ?>">Detail</a>
                     <a href="editKontak.php?id=<?php echo $row[0] ?>">Edit</a>
                     <a href="deleteKontak.php?id=<?php echo $row[0] ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</a>
                 </td>
