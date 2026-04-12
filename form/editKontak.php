@@ -24,8 +24,7 @@
                 <tr>
                     <td>Nama Depan</td>
                     <td>
-                        <input type="hidden" name="ID" value="<?php
-                                                                echo $row[0]; ?>">
+                        <input type="hidden" name="ID" value="<?php echo $row[0]; ?>">
                         <input type="text" name="NamaDepan"
                             value="<?php echo $row[2]; ?>">
                     </td>

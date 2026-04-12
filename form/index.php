@@ -23,18 +23,18 @@
         // $update = "UPDATE Kontak SET NamaDepan = 'Panji' WHERE ID = 4";
         // $hasil = $db_conn->query($update);
         $no = 1;
-        $sql = "SELECT * FROM kontak";
+        $sql = "SELECT * FROM kontak ORDER BY ID DESC";
         $result = $db_conn->query($sql);
         while ($row = $result->fetch()) {
         ?>
             <tr>
                 <td><?php echo $no++ ?></td>
-                <td><?php echo $row[2] ?></td>
                 <td><?php echo $row[1] ?></td>
+                <td><?php echo $row[2] ?></td>
                 <td><?php echo $row[3] ?></td>
                 <td>
                     <a href="editKontak.php?id=<?php echo $row[0] ?>">Edit</a>
-                    <a href="deleteKontak.php?id=<?php echo $row[0] ?>">Hapus</a>
+                    <a href="deleteKontak.php?id=<?php echo $row[0] ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</a>
                 </td>
             </tr>
         <?php
