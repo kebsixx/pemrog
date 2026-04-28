@@ -1,12 +1,13 @@
 <?php
-$db = 'C:\laragon\www\pw\form\kontak.accdb';
-
-if (!file_exists($db)) {
-    die("Error: File database tidak ditemukan.");
-}
+$host = "localhost";
+$port = "5432";
+$dbname = "kampusdb";
+$user = "mahasiswa";
+$pass = "password123";
 
 try {
-    $db_conn = new PDO("odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)};Dbq=$db;");
+    $dsn = "pgsql:host={$host};port={$port};dbname={$dbname}";
+    $db_conn = new PDO($dsn, $user, $pass);
     $db_conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Koneksi gagal: " . $e->getMessage());
