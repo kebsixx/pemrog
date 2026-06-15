@@ -1,6 +1,7 @@
-# Catatan Persiapan Post Test - Pemrograman Web
+# Rangkuman Materi Pemrograman Web
 
-Catatan ini dirancang khusus untuk persiapan post-test dengan fokus pada materi yang diajarkan di kelas Teori dan Praktikum Pemrograman Web, menggunakan **Microsoft Access** dan **PostgreSQL** sebagai sistem basis data (MySQL tidak digunakan/diperbolehkan).
+Rangkuman materi Pemrograman Web (MS Access & PostgreSQL).
+
 
 ---
 
