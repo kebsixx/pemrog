@@ -14,11 +14,16 @@ class AdminController
         $this->model = $model;
     }
 
-    private function requireLogin(): void
+    private function startSession(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+    }
+
+    private function requireLogin(): void
+    {
+        $this->startSession();
 
         if (empty($_SESSION['user_id'])) {
             header('Location: index.php?route=login');
@@ -32,6 +37,8 @@ class AdminController
         $pageTitle = 'Overview';
         $activeRoute = 'overview';
         $username = $_SESSION['username'] ?? '';
+        $rememberedUsername = $_COOKIE['last_login_username'] ?? '';
+        $lastLoginAt = $_COOKIE['last_login_at'] ?? '';
 
         require __DIR__ . '/../Views/layout/header.php';
         require __DIR__ . '/../Views/admin/overview.php';
@@ -43,8 +50,7 @@ class AdminController
         $this->requireLogin();
         $pageTitle = 'Profile';
         $activeRoute = 'profile';
-
-        $id = isset($_GET['id']) ? (int) $_GET['id'] : (int) $_SESSION['user_id'];
+        $id = (int) $_SESSION['user_id'];
         $profile = $this->model->getProfile($id);
 
         require __DIR__ . '/../Views/layout/header.php';

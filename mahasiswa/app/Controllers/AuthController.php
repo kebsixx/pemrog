@@ -7,6 +7,10 @@ use App\Models\MahasiswaModel;
 
 class AuthController
 {
+    private const COOKIE_USERNAME = 'last_login_username';
+    private const COOKIE_LOGIN_AT = 'last_login_at';
+    private const COOKIE_LIFETIME = 604800;
+
     private MahasiswaModel $model;
 
     public function __construct(MahasiswaModel $model)
@@ -25,6 +29,8 @@ class AuthController
     public function showLogin(string $error = ''): void
     {
         $pageTitle = 'Login';
+        $rememberedUsername = $_COOKIE[self::COOKIE_USERNAME] ?? '';
+        $lastLoginAt = $_COOKIE[self::COOKIE_LOGIN_AT] ?? '';
         require __DIR__ . '/../Views/layout/header.php';
         require __DIR__ . '/../Views/auth/login.php';
         require __DIR__ . '/../Views/layout/footer.php';
@@ -54,8 +60,10 @@ class AuthController
             return;
         }
 
+        session_regenerate_id(true);
         $_SESSION['user_id'] = (int) $row['id'];
         $_SESSION['username'] = $row['username'];
+        $this->storeLoginCookies($row['username']);
 
         header('Location: index.php?route=overview');
         exit;
@@ -66,6 +74,11 @@ class AuthController
         $this->startSession();
         session_unset();
         session_destroy();
+
+        if (ini_get('session.use_cookies')) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 3600, $params['path'], $params['domain'], (bool) $params['secure'], (bool) $params['httponly']);
+        }
 
         header('Location: index.php?route=login');
         exit;
@@ -127,5 +140,14 @@ class AuthController
 
         header('Location: index.php?route=login');
         exit;
+    }
+
+    private function storeLoginCookies(string $username): void
+    {
+        $expires = time() + self::COOKIE_LIFETIME;
+        $path = '/';
+
+        setcookie(self::COOKIE_USERNAME, $username, $expires, $path, '', false, true);
+        setcookie(self::COOKIE_LOGIN_AT, date('Y-m-d H:i:s'), $expires, $path, '', false, true);
     }
 }

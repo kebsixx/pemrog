@@ -1,13 +1,9 @@
 <?php
-$host = "localhost";
-$port = "5432";
-$dbname = "kampusdb";
-$user = "mahasiswa";
-$pass = "password123";
+$db_path = __DIR__ . "/kontak.accdb";
 
 try {
-    $dsn = "pgsql:host={$host};port={$port};dbname={$dbname}";
-    $db_conn = new PDO($dsn, $user, $pass);
+    $dsn = "odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)};Dbq={$db_path};";
+    $db_conn = new PDO($dsn);
     $db_conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Koneksi gagal: " . $e->getMessage());

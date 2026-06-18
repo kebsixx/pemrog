@@ -1,4 +1,5 @@
 <h2>Profile Mahasiswa</h2>
+<p class="muted">Halaman ini hanya menampilkan data akun yang sedang login.</p>
 
 <?php if (empty($profile)): ?>
     <p class="error">Data profile tidak ditemukan.</p>

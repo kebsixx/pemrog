@@ -1,5 +1,14 @@
+<?php
+$rememberedUsername = $rememberedUsername ?? '';
+$lastLoginAt = $lastLoginAt ?? '';
+?>
+
 <h2>Silahkan Login</h2>
 <p class="muted">Masukkan username dan password.</p>
+
+<?php if (!empty($lastLoginAt)): ?>
+    <p class="muted">Cookie terakhir tersimpan untuk user <strong><?php echo htmlspecialchars($rememberedUsername); ?></strong> pada <?php echo htmlspecialchars($lastLoginAt); ?>.</p>
+<?php endif; ?>
 
 <?php if (!empty($error)): ?>
     <div class="error"><?php echo htmlspecialchars($error); ?></div>
@@ -9,7 +18,7 @@
     <table>
         <tr>
             <th>Username</th>
-            <td><input type="text" name="username" placeholder="ID" required></td>
+            <td><input type="text" name="username" placeholder="ID" value="<?php echo htmlspecialchars($rememberedUsername); ?>" required></td>
         </tr>
         <tr>
             <th>Password</th>
