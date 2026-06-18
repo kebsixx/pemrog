@@ -172,6 +172,93 @@ public function getAllMahasiswa(): array
 }
 ```
 
+### G. Modul Upload Avatar
+- **Controller**: `AdminController::tasks()` dan `AdminController::uploadTask()`.
+- **Model**: `MahasiswaModel::saveAvatar()` dan `MahasiswaModel::getAvatarByUser()`.
+- **View**: `app/Views/admin/tasks.php`.
+- **Fitur**: User yang sudah login dapat mengunggah foto profil dari komputer. Sistem membatasi file hanya untuk gambar dengan format `JPG`, `JPEG`, `PNG`, dan `GIF`, serta ukuran maksimal `2 MB`. File avatar disimpan ke folder `storage/avatars`, sedangkan metadata file disimpan ke database pada tabel `avatar_user`.
+
+Contoh kode upload avatar:
+
+```php
+public function uploadTask(): void
+{
+    $this->requireLogin();
+    $file = $_FILES['berkas'] ?? null;
+
+    if (!is_array($file)) {
+        $this->setFlash('error', 'File avatar wajib dipilih.');
+        header('Location: index.php?route=tasks');
+        exit;
+    }
+
+    $originalName = (string) ($file['name'] ?? '');
+    $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+    $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+
+    if ($originalName === '' || !in_array($extension, $allowed, true)) {
+        $this->setFlash('error', 'Format avatar tidak didukung.');
+        header('Location: index.php?route=tasks');
+        exit;
+    }
+
+    $storedName = sprintf(
+        'avatar_%d_%s.%s',
+        (int) $_SESSION['user_id'],
+        bin2hex(random_bytes(8)),
+        $extension
+    );
+}
+```
+
+### H. Modul Download Avatar
+- **Controller**: `AdminController::downloadTask()`.
+- **Model**: `MahasiswaModel::getAvatarByUser()`.
+- **View**: Tombol unduh tersedia pada halaman `app/Views/admin/tasks.php`.
+- **Fitur**: User dapat mengunduh kembali avatar yang sudah pernah diunggah. Sebelum file dikirim, sistem akan mengecek apakah avatar memang dimiliki oleh user yang sedang login dan apakah file fisiknya tersedia pada server.
+
+Contoh kode download avatar:
+
+```php
+public function downloadTask(): void
+{
+    $this->requireLogin();
+    $avatar = $this->model->getAvatarByUser((int) $_SESSION['user_id']);
+
+    if (empty($avatar['avatar_nama_file'])) {
+        $this->setFlash('error', 'Avatar belum diupload.');
+        header('Location: index.php?route=tasks');
+        exit;
+    }
+
+    $path = self::AVATAR_DIR . DIRECTORY_SEPARATOR . $avatar['avatar_nama_file'];
+
+    header('Content-Type: ' . ($avatar['avatar_tipe_file'] ?: 'application/octet-stream'));
+    header('Content-Disposition: attachment; filename="' . basename((string) $avatar['avatar_nama_asli']) . '"');
+    readfile($path);
+    exit;
+}
+```
+
+### I. Modul Preview Avatar
+- **Controller**: `AdminController::overview()`, `AdminController::profile()`, dan `AdminController::tasks()`.
+- **Model**: `MahasiswaModel::getProfile()` dan `MahasiswaModel::getAvatarByUser()`.
+- **View**: `app/Views/admin/overview.php`, `app/Views/admin/profile.php`, dan `app/Views/admin/tasks.php`.
+- **Fitur**: Jika user belum memiliki avatar sendiri, aplikasi akan menampilkan gambar `default-avatar.jpg` dari folder `public/assets/img`. Jika user sudah mengunggah avatar, aplikasi menampilkan file avatar yang tersimpan di server.
+
+Contoh kode fallback avatar:
+
+```php
+private function resolveAvatarUrl(?array $profile): string
+{
+    if (!empty($profile['avatar_nama_file'])) {
+        return '../storage/avatars/' . rawurlencode((string) $profile['avatar_nama_file']);
+    }
+
+    return self::DEFAULT_AVATAR;
+}
+```
+
 ---
 
 ## 3. Detail Teknis
@@ -179,5 +266,6 @@ public function getAllMahasiswa(): array
 - **Database**: PostgreSQL dengan skema khusus (`mahasiswa`).
 - **Autentikasi**: Menggunakan PHP Session standar yang diperkuat dengan regenerasi session ID setelah login.
 - **Cookies**: Menggunakan cookie HTTP-only untuk menyimpan username login terakhir dan waktu login terakhir selama 7 hari.
+- **Upload dan Download**: Avatar user disimpan dalam folder `storage/avatars`, sementara metadata file disimpan di tabel `avatar_user`.
 - **Styling**: CSS eksternal di `public/assets/css/style.css` untuk memastikan tampilan yang rapi dan konsisten.
 - **Keamanan**: Penggunaan `password_hash()` dan `password_verify()` untuk manajemen password, serta `PDO prepared statements` untuk mencegah SQL Injection.

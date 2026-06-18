@@ -68,6 +68,17 @@ switch ($route) {
     case 'tasks':
         $adminController->tasks();
         break;
+    case 'task-upload':
+        if ($method === 'POST') {
+            $adminController->uploadTask();
+        } else {
+            header('Location: index.php?route=tasks');
+            exit;
+        }
+        break;
+    case 'task-download':
+        $adminController->downloadTask();
+        break;
     case 'overview':
     default:
         $adminController->overview();

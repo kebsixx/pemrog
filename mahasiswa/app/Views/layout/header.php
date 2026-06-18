@@ -21,7 +21,7 @@ $activeRoute = $activeRoute ?? '';
                     <li><a class="<?php echo $activeRoute === 'overview' ? 'active' : ''; ?>" href="index.php?route=overview">Overview</a></li>
                     <li><a class="<?php echo $activeRoute === 'profile' ? 'active' : ''; ?>" href="index.php?route=profile">Profile User</a></li>
                     <li><a class="<?php echo $activeRoute === 'mahasiswa' ? 'active' : ''; ?>" href="index.php?route=mahasiswa">Data Mahasiswa</a></li>
-                    <li><a class="<?php echo $activeRoute === 'tasks' ? 'active' : ''; ?>" href="index.php?route=tasks">Data Tugas</a></li>
+                    <li><a class="<?php echo $activeRoute === 'tasks' ? 'active' : ''; ?>" href="index.php?route=tasks">Upload Avatar</a></li>
                 </ul>
             </aside>
             <div class="main">
